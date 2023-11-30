@@ -4,8 +4,9 @@ import { ChatService } from './chat.service';
 @Controller('chat')
 export class ChatController {
   constructor(private ChatService: ChatService) {}
+
   @Post()
-  sendMessage(@Req() req: any) {
+  saveMessage(@Req() req: any) {
     return this.ChatService.saveMessage(req.body);
   }
   @Get()

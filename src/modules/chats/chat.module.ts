@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
+import { MongooseModule } from '../mongoose.db/mongoose.module';
 
 @Module({
-  imports: [],
+  imports: [MongooseModule],
   providers: [ChatService],
   controllers: [ChatController],
 })
