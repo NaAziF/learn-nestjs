@@ -22,7 +22,7 @@ export class ChatGateway implements OnModuleInit {
   server;
   onModuleInit() {
     this.server.on('connect', (socket) => {
-      console.log(socket.id);
+      // console.log(socket.id);
       socket.on('disconnect', (sock) => {
         log('BELOW Disconnected');
         console.log(sock);
@@ -32,7 +32,8 @@ export class ChatGateway implements OnModuleInit {
   }
   @SubscribeMessage('message')
   handleMessage(@MessageBody() message: string): void {
-    this.server.emit('message', ' hello Your data recived');
+    // Broadcast Message to any particular client
+    this.server.to().emit('message', ' hello Your data recived');
 
     console.log(message);
     this.ChatService.saveMessage(message);
