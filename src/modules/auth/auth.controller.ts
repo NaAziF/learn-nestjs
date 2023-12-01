@@ -1,6 +1,6 @@
 import { Controller, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { MongooseService } from '../mongoose.db/mongoose.service';
+import { MongooseService } from '../mongodb/mongodb.service';
 
 @Controller('auth')
 export class AuthController {

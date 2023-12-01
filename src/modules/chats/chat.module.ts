@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
-import { MongooseModule } from '../mongoose.db/mongoose.module';
-import { MongooseService } from '../mongoose.db/mongoose.service';
+import { MongooseModule } from '../mongodb/monodb.module';
+import { MongooseService } from '../mongodb/mongodb.service';
 import { ChatGateway } from './chat.gateway';
 
 @Module({
