@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { MongoService } from './mongodb.service';
 
 @Module({
   imports: [],
-  providers: [MongooseModule],
+  providers: [MongoService],
 })
-export class MongooseModule {}
+export class MongoModule {}

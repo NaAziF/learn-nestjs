@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { MongooseService } from '../mongodb/mongodb.service';
+import { MongoService } from '../mongodb/mongodb.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private MongooseService: MongooseService) {}
+  constructor(private MongoService: MongoService) {}
   saveMessage(msg: any) {
-    this.MongooseService.insertMessage('');
+    this.MongoService.insertMessage('');
     return `Message Saved for : ${msg.Name}`;
   }
   getMessage(params?: any) {

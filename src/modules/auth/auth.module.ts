@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { MongooseModule } from '../mongodb/monodb.module';
+import { MongoModule } from '../mongodb/monodb.module';
 
 @Module({
-  imports: [MongooseModule],
+  imports: [MongoModule],
   providers: [AuthService],
   controllers: [AuthController],
 })
