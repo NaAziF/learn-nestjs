@@ -6,6 +6,17 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Chat {
+  MessageId     String   @id @map("_id")
+  CreatedAt     DateTime @default(now())
+  UpdatedAt     DateTime @updatedAt
+  SenderId      Int
+  RecieverId    Int
+  MessageStatus Int
+  Message       String
+  Attachments   String?
 }
