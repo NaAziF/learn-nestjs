@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MongoService } from '../mongodb/mongodb.service';
+import { MongoService } from '../mongodb/mongo.service';
 
 @Injectable()
 export class ChatService {

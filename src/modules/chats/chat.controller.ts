@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { MongoService } from '../mongodb/mongodb.service';
+import { MongoService } from '../mongodb/mongo.service';
 
 @Controller('chat')
 export class ChatController {
