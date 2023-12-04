@@ -4,17 +4,14 @@ import { MongoService } from '../mongodb/mongo.service';
 
 @Controller('chat')
 export class ChatController {
-  constructor(
-    private ChatService: ChatService,
-    private MongoService: MongoService,
-  ) {}
+  constructor(private ChatService: ChatService) {}
 
   @Post()
   async saveMessage(@Req() req: any): Promise<string> {
     return await this.ChatService.saveMessage(req.body);
   }
   @Get()
-  getMessage(@Req() req: any): string {
-    return this.ChatService.getMessage(req.body);
+  async getMessage(@Req() req: any): Promise<object> {
+    return await this.ChatService.getMessage(req.body);
   }
 }

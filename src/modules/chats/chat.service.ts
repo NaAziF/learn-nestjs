@@ -22,7 +22,12 @@ export class ChatService {
 
     return user;
   }
-  getMessage(params?: any) {
-    return `Message Send to : ${params.Name}`;
+  async getMessage(userPayload: any) {
+    let chats = await this.prisma.chat.findMany({
+      where: {
+        RecieverId: userPayload.reciever,
+      },
+    });
+    return chats;
   }
 }
