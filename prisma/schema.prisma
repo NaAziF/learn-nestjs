@@ -11,12 +11,12 @@ datasource db {
 }
 
 model Chat {
-  MessageId     String   @id @map("_id")
+  MessageId     String   @id @default(auto()) @map("_id") @db.ObjectId
   CreatedAt     DateTime @default(now())
   UpdatedAt     DateTime @updatedAt
   SenderId      Int
   RecieverId    Int
-  MessageStatus Int
+  MessageStatus Int      @default(0)
   Message       String
-  Attachments   String?
+  Attachments   Json?
 }
