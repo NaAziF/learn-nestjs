@@ -10,8 +10,8 @@ export class ChatController {
   ) {}
 
   @Post()
-  saveMessage(@Req() req: any): string {
-    return this.ChatService.saveMessage(req.body);
+  async saveMessage(@Req() req: any): Promise<string> {
+    return await this.ChatService.saveMessage(req.body);
   }
   @Get()
   getMessage(@Req() req: any): string {

@@ -17,6 +17,6 @@ model Chat {
   SenderId      Int
   RecieverId    Int
   MessageStatus Int      @default(0)
-  Message       String?
+  Message       String
   Attachments   Json?
 }

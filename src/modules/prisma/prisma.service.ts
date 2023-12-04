@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+import { PrismaClient, Prisma } from '@prisma/client';
 @Injectable()
 export class PrismaService extends PrismaClient {
-  constructor() {
+  constructor(config: ConfigService) {
     super({
       datasources: {
         db: {
-          url: 'test url',
+          url: config.get('DATABASE_URL'),
         },
       },
     });
   }
 
-  SaveMessageDemo(msg: String): string {
-    return 'saved';
-  }
+  ObjId() {}
 }

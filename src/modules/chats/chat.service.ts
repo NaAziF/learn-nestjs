@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MongoService } from '../mongodb/mongo.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ChatService {
@@ -9,12 +10,19 @@ export class ChatService {
     private prisma: PrismaService,
   ) {}
 
-  saveMessage(msg: any) {
-    this.prisma.SaveMessageDemo('ssa');
-    this.prisma.$connect();
+  async saveMessage(msg: any) {
+    let user: any = await this.prisma.chat.create({
+      data: {
+        MessageId: undefined,
+        SenderId: msg.sender,
+        RecieverId: msg.reciever,
+        Message: msg.text,
+        MessageStatus: 1,
+        Attachments: {},
+      },
+    });
 
-    this.MongoService.insertMessage('');
-    return `Message Saved for : ${msg.Name}`;
+    return user;
   }
   getMessage(params?: any) {
     return `Message Send to : ${params.Name}`;
