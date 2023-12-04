@@ -11,7 +11,7 @@ export class ChatController {
     return await this.ChatService.saveMessage(req.body);
   }
   @Get()
-  async getMessage(@Req() req: any): Promise<object> {
+  async getMessage(@Req() req: any): Promise<string> {
     return await this.ChatService.getMessage(req.body);
   }
 }

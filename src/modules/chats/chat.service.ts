@@ -9,7 +9,7 @@ export class ChatService {
     private prisma: PrismaService,
   ) {}
 
-  async saveMessage(msg: any) {
+  async saveMessage(msg: any): Promise<string> {
     let user: any = await this.prisma.chat.create({
       data: {
         SenderId: msg.sender,
@@ -22,8 +22,8 @@ export class ChatService {
 
     return user;
   }
-  async getMessage(userPayload: any) {
-    let chats = await this.prisma.chat.findMany({
+  async getMessage(userPayload: any): Promise<string> {
+    let chats: any = await this.prisma.chat.findMany({
       where: {
         RecieverId: userPayload.reciever,
       },
