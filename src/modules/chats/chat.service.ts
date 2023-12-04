@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { MongoService } from '../mongodb/mongo.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { log } from 'console';
 
 @Injectable()
 export class ChatService {
-  constructor(
-    private MongoService: MongoService,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async saveMessage(msg: any): Promise<string> {
     let user: any = await this.prisma.chat.create({
@@ -16,7 +13,7 @@ export class ChatService {
         RecieverId: msg.reciever,
         Message: msg.text,
         MessageStatus: 1,
-        Attachments: {},
+        Attachments: msg.Attachments,
       },
     });
 
@@ -28,6 +25,7 @@ export class ChatService {
         RecieverId: userPayload.reciever,
       },
     });
+    log(userPayload.reciever);
     return chats;
   }
 }

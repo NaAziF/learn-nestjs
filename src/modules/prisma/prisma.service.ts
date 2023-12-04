@@ -12,6 +12,4 @@ export class PrismaService extends PrismaClient {
       },
     });
   }
-
-  ObjId() {}
 }
