@@ -7,9 +7,7 @@ import {
 import { ChatService } from './chat.service';
 import { OnModuleInit } from '@nestjs/common';
 import { UsePipes } from '@nestjs/common';
-
 import { SendMessageDto } from './dto';
-import { plainToClass } from 'class-transformer';
 
 @WebSocketGateway({
   cors: {
@@ -25,20 +23,22 @@ export class ChatGateway implements OnModuleInit {
   server;
   onModuleInit() {
     this.server.on('connect', (socket) => {
-      socket.on('disconnect', (sock) => {});
+      socket.on('disconnect', (sock) => {
+        console.log(`${socket.id} Disconnected`);
+        //remove session id from cache
+      });
     });
   }
   @SubscribeMessage('message')
   @UsePipes(SendMessageDto)
   async handleMessage(@MessageBody() message: any): Promise<void> {
-    // message = JSON.parse(message);
-    const chatDto = plainToClass(SendMessageDto, message);
-    console.log(chatDto);
+    message = JSON.parse(message);
 
-    // Broadcast Message to any particular client
-    //let chatMessage: string = await this.ChatService.saveMessage(message);
+    // Save Message to database
+    let chatMessage: string = await this.ChatService.saveMessage(message);
     //this.server.emit('message', chatMessage);
-    //this.server.to().emit('message', message);
-    // this.ChatService.saveMessage(message);
+
+    // Broadcast Message to any particular client using session id
+    this.server.to().emit('message', chatMessage);
   }
 }

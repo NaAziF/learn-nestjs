@@ -24,6 +24,7 @@ export class ChatService {
       where: {
         RecieverId: dto.RecieverId,
         SenderId: dto.SenderId,
+        IsDeleted: false,
       },
       orderBy: {
         CreatedAt: 'desc',

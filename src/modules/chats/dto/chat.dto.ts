@@ -19,8 +19,8 @@ export class SendMessageDto {
   @IsNotEmpty()
   Message: string;
 
-  @IsJSON()
   @IsOptional()
+  @IsJSON()
   Attachments?: object;
 }
 export class RecieveMessageDto {
