@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { log } from 'console';
 import { SendMessageDto, RecieveMessageDto } from './dto';
 
 @Injectable()
@@ -26,8 +25,10 @@ export class ChatService {
         RecieverId: dto.RecieverId,
         SenderId: dto.SenderId,
       },
+      orderBy: {
+        CreatedAt: 'desc',
+      },
     });
-    // log(userPayload.reciever);
     return chats;
   }
 }
