@@ -1,31 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { log } from 'console';
+import { SendMessageDto, RecieveMessageDto } from './dto';
 
 @Injectable()
 export class ChatService {
   constructor(private prisma: PrismaService) {}
 
-  async saveMessage(msg: any): Promise<string> {
+  async saveMessage(dto: SendMessageDto): Promise<string> {
     let user: any = await this.prisma.chat.create({
       data: {
-        SenderId: msg.sender,
-        RecieverId: msg.reciever,
-        Message: msg.text,
+        SenderId: dto.SenderId,
+        RecieverId: dto.RecieverId,
+        Message: dto.Message,
         MessageStatus: 1,
-        Attachments: msg.Attachments,
+        Attachments: dto.Attachments,
       },
     });
 
     return user;
   }
-  async getMessage(userPayload: any): Promise<string> {
+  async getMessage(dto: RecieveMessageDto): Promise<string> {
     let chats: any = await this.prisma.chat.findMany({
       where: {
-        RecieverId: userPayload.reciever,
+        RecieverId: dto.RecieverId,
+        SenderId: dto.SenderId,
       },
     });
-    log(userPayload.reciever);
+    // log(userPayload.reciever);
     return chats;
   }
 }

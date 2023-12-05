@@ -36,6 +36,6 @@ export class ChatGateway implements OnModuleInit {
     this.server.to().emit('message', ' hello Your data recived');
 
     console.log(message);
-    this.ChatService.saveMessage(message);
+    //  this.ChatService.saveMessage();
   }
 }
