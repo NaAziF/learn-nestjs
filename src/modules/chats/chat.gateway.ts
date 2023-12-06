@@ -35,7 +35,7 @@ export class ChatGateway implements OnModuleInit {
     message = JSON.parse(message);
 
     // Save Message to database
-    let chatMessage: string = await this.ChatService.saveMessage(message);
+    let chatMessage: object = await this.ChatService.saveMessage(message);
     //this.server.emit('message', chatMessage);
 
     // Broadcast Message to any particular client using session id

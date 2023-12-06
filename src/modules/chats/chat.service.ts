@@ -6,21 +6,21 @@ import { SendMessageDto, RecieveMessageDto } from './dto';
 export class ChatService {
   constructor(private prisma: PrismaService) {}
 
-  async saveMessage(dto: SendMessageDto): Promise<string> {
-    let user: any = await this.prisma.chat.create({
+  async saveMessage(dto: SendMessageDto): Promise<object> {
+    let user: object = await this.prisma.chat.create({
       data: {
         SenderId: dto.SenderId,
         RecieverId: dto.RecieverId,
         Message: dto.Message,
-        MessageStatus: 1,
+        MessageStatus: 0,
         Attachments: dto.Attachments,
       },
     });
 
     return user;
   }
-  async getMessage(dto: RecieveMessageDto): Promise<string> {
-    let chats: any = await this.prisma.chat.findMany({
+  async getMessage(dto: RecieveMessageDto): Promise<object> {
+    let chats: object = await this.prisma.chat.findMany({
       where: {
         RecieverId: dto.RecieverId,
         SenderId: dto.SenderId,
@@ -31,5 +31,40 @@ export class ChatService {
       },
     });
     return chats;
+  }
+  async updateMessage(msgId: string): Promise<object> {
+    let chat: object = await this.prisma.chat.update({
+      data: {
+        MessageStatus: 1,
+      },
+      where: {
+        MessageId: msgId,
+      },
+    });
+    return chat;
+  }
+
+  async deleteMessage(msgId: string): Promise<object> {
+    let validity: Date = new Date();
+
+    validity.setHours(validity.getHours() - 1);
+    let chat: object;
+    try {
+      chat = await this.prisma.chat.update({
+        where: {
+          MessageId: msgId,
+          CreatedAt: {
+            gte: validity,
+          },
+        },
+
+        data: {
+          IsDeleted: true,
+        },
+      });
+    } catch (error) {
+      return error.meta;
+    }
+    return chat;
   }
 }

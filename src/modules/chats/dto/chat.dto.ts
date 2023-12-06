@@ -32,3 +32,9 @@ export class RecieveMessageDto {
   @IsNotEmpty()
   RecieverId: number;
 }
+
+export class UpdateMessageDto {
+  @IsString()
+  @IsNotEmpty()
+  MessageId: string;
+}
