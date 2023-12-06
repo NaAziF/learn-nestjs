@@ -30,6 +30,8 @@ export class ChatService {
       orderBy: {
         CreatedAt: 'desc',
       },
+      take: 100,
+      skip: 0,
     });
     return chats;
   }
