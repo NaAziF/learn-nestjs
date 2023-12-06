@@ -7,7 +7,6 @@ import {
 import { ChatService } from './chat.service';
 import { OnModuleInit } from '@nestjs/common';
 import { UsePipes, Inject } from '@nestjs/common';
-import { SendMessageDto } from './dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Socket } from 'socket.io';
@@ -27,9 +26,12 @@ export class ChatGateway implements OnModuleInit {
 
   @WebSocketServer()
   server;
+  sessionID: string;
   onModuleInit() {
     this.server.on('connection', async (socket: Socket) => {
-      const value = await this.cacheManager.set(
+      // save session Id in cache
+      this.sessionID = socket.id;
+      await this.cacheManager.set(
         `${socket.handshake.headers.userid}`,
         socket.id,
         0,
@@ -46,8 +48,16 @@ export class ChatGateway implements OnModuleInit {
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() message: any): Promise<void> {
     message = JSON.parse(message);
-
-    //this.server.emit('message', chatMessage);
+    let savedSession: string = await this.cacheManager.get(
+      `${message.SenderId}`,
+    );
+    if (savedSession != this.sessionID) {
+      console.log('Phishing Detected');
+      this.server
+        .to(this.sessionID)
+        .emit('message', 'Something is wrong at your end');
+      return;
+    }
     const to = await this.cacheManager.get(`${message.RecieverId}`);
     // Save Message to database
     let chatMessage: object = await this.ChatService.saveMessage(

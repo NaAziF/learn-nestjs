@@ -1,6 +1,11 @@
 import { Body, Controller, Get, Patch, Post, Delete } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { SendMessageDto, RecieveMessageDto, UpdateMessageDto } from './dto';
+import {
+  SendMessageDto,
+  RecieveMessageDto,
+  UpdateMessageDto,
+  DeleteMessageDto,
+} from './dto';
 
 @Controller('chat')
 export class ChatController {
@@ -18,11 +23,11 @@ export class ChatController {
 
   @Patch()
   async updateMessage(@Body() req: UpdateMessageDto): Promise<object> {
-    return await this.ChatService.updateMessage(req.MessageId);
+    return await this.ChatService.updateMessage(req);
   }
 
   @Delete()
-  async deleteMessage(@Body() req: UpdateMessageDto): Promise<object> {
+  async deleteMessage(@Body() req: DeleteMessageDto): Promise<object> {
     return await this.ChatService.deleteMessage(req.MessageId);
   }
 }

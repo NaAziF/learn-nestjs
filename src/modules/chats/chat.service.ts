@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { SendMessageDto, RecieveMessageDto } from './dto';
+import { SendMessageDto, RecieveMessageDto, UpdateMessageDto } from './dto';
 
 @Injectable()
 export class ChatService {
@@ -33,14 +33,15 @@ export class ChatService {
     });
     return chats;
   }
-  async updateMessage(msgId: string): Promise<object> {
+  async updateMessage(msg: UpdateMessageDto): Promise<object> {
     // update messageStatus to enable the features like send,delivered,read etc
-    let chat: object = await this.prisma.chat.update({
-      data: {
-        MessageStatus: 1,
-      },
+    let chat: object = await this.prisma.chat.updateMany({
       where: {
-        MessageId: msgId,
+        SenderId: msg.SenderId,
+        RecieverId: msg.RecieverId,
+      },
+      data: {
+        MessageStatus: msg.MessageStatus,
       },
     });
     return chat;
