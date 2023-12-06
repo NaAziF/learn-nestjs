@@ -26,11 +26,11 @@ export class ChatGateway implements OnModuleInit {
 
   @WebSocketServer()
   server;
-  sessionID: string;
+
   onModuleInit() {
     this.server.on('connection', async (socket: Socket) => {
       // save session Id in cache
-      this.sessionID = socket.id;
+
       await this.cacheManager.set(
         `${socket.handshake.headers.userid}`,
         socket.id,
@@ -48,16 +48,7 @@ export class ChatGateway implements OnModuleInit {
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() message: any): Promise<void> {
     message = JSON.parse(message);
-    let savedSession: string = await this.cacheManager.get(
-      `${message.SenderId}`,
-    );
-    if (savedSession != this.sessionID) {
-      console.log('Phishing Detected');
-      this.server
-        .to(this.sessionID)
-        .emit('message', 'Something is wrong at your end');
-      return;
-    }
+
     const to = await this.cacheManager.get(`${message.RecieverId}`);
     // Save Message to database
     let chatMessage: object = await this.ChatService.saveMessage(
