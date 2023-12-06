@@ -6,8 +6,11 @@ import {
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { OnModuleInit } from '@nestjs/common';
-import { UsePipes } from '@nestjs/common';
+import { UsePipes, Inject } from '@nestjs/common';
 import { SendMessageDto } from './dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
@@ -17,28 +20,44 @@ import { SendMessageDto } from './dto';
   },
 })
 export class ChatGateway implements OnModuleInit {
-  constructor(private ChatService: ChatService) {}
+  constructor(
+    private ChatService: ChatService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @WebSocketServer()
   server;
   onModuleInit() {
-    this.server.on('connect', (socket) => {
-      socket.on('disconnect', (sock) => {
-        console.log(`${socket.id} Disconnected`);
+    this.server.on('connection', async (socket: Socket) => {
+      const value = await this.cacheManager.set(
+        `${socket.handshake.headers.userid}`,
+        socket.id,
+        0,
+      );
+
+      socket.on('disconnect', async (sock) => {
         //remove session id from cache
+
+        await this.cacheManager.del(`${socket.handshake.headers.userid}`);
       });
     });
   }
+
   @SubscribeMessage('message')
-  @UsePipes(SendMessageDto)
   async handleMessage(@MessageBody() message: any): Promise<void> {
     message = JSON.parse(message);
 
-    // Save Message to database
-    let chatMessage: object = await this.ChatService.saveMessage(message);
     //this.server.emit('message', chatMessage);
+    const to = await this.cacheManager.get(`${message.RecieverId}`);
+    // Save Message to database
+    let chatMessage: object = await this.ChatService.saveMessage(
+      message,
+      to == undefined ? 0 : 1,
+    );
 
-    // Broadcast Message to any particular client using session id
-    this.server.to().emit('message', chatMessage);
+    // Broadcast Message to any particular client using session id in client is online
+    if (to) {
+      this.server.to(to).emit('message', chatMessage);
+    }
   }
 }

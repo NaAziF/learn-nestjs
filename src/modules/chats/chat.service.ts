@@ -6,13 +6,13 @@ import { SendMessageDto, RecieveMessageDto } from './dto';
 export class ChatService {
   constructor(private prisma: PrismaService) {}
 
-  async saveMessage(dto: SendMessageDto): Promise<object> {
+  async saveMessage(dto: SendMessageDto, status = 0): Promise<object> {
     let user: object = await this.prisma.chat.create({
       data: {
         SenderId: dto.SenderId,
         RecieverId: dto.RecieverId,
         Message: dto.Message,
-        MessageStatus: 0,
+        MessageStatus: status,
         Attachments: dto.Attachments,
       },
     });
@@ -20,6 +20,7 @@ export class ChatService {
     return user;
   }
   async getMessage(dto: RecieveMessageDto): Promise<object> {
+    //get message from database , requires (RecieverId & SenderId)
     let chats: object = await this.prisma.chat.findMany({
       where: {
         RecieverId: dto.RecieverId,
@@ -33,6 +34,7 @@ export class ChatService {
     return chats;
   }
   async updateMessage(msgId: string): Promise<object> {
+    // update messageStatus to enable the features like send,delivered,read etc
     let chat: object = await this.prisma.chat.update({
       data: {
         MessageStatus: 1,
@@ -45,9 +47,10 @@ export class ChatService {
   }
 
   async deleteMessage(msgId: string): Promise<object> {
+    //Delete Message Method only sets the delete flag true and does not delete the message
+    //message can be deleted only within 1 hour after sending
     let validity: Date = new Date();
-
-    validity.setHours(validity.getHours() - 1);
+    validity.setHours(validity.getHours() - 1); //change the subtract number to change validity to delete messages
     let chat: object;
     try {
       chat = await this.prisma.chat.update({

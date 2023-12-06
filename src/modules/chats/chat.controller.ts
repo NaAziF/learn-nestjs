@@ -7,7 +7,7 @@ export class ChatController {
   constructor(private ChatService: ChatService) {}
 
   @Post()
-  async saveMessage(@Body() req: SendMessageDto): Promise<object> {
+  async sendMessage(@Body() req: SendMessageDto): Promise<object> {
     return await this.ChatService.saveMessage(req);
   }
 

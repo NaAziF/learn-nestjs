@@ -10,8 +10,8 @@ import { AuthModule } from './modules/auth/auth.module';
     UserModule,
     ChatModule,
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true }),
     CacheModule.register({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
 })
 export class AppModule {}
