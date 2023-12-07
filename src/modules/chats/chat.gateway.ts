@@ -10,6 +10,8 @@ import { UsePipes, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Socket } from 'socket.io';
+import { JwtService } from '@nestjs/jwt';
+import { JWTSECRET } from '../auth/constants';
 
 @WebSocketGateway({
   cors: {
@@ -21,6 +23,7 @@ import { Socket } from 'socket.io';
 export class ChatGateway implements OnModuleInit {
   constructor(
     private ChatService: ChatService,
+    private JwtService: JwtService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -30,6 +33,19 @@ export class ChatGateway implements OnModuleInit {
   onModuleInit() {
     this.server.on('connection', async (socket: Socket) => {
       // save session Id in cache
+      const [type, token] =
+        socket.handshake.headers.authorization?.split(' ') ?? [];
+      try {
+        await this.JwtService.verifyAsync(token, {
+          secret: JWTSECRET,
+        });
+      } catch {
+        this.server
+          .to(socket.id)
+          .emit('message', 'Invalid Auth Token! Disconnected...');
+        socket.disconnect();
+        return;
+      }
 
       await this.cacheManager.set(
         `${socket.handshake.headers.userid}`,
