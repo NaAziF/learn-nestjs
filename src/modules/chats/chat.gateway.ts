@@ -35,8 +35,9 @@ export class ChatGateway implements OnModuleInit {
       // validate the jwt from connection handshake
       const [type, token] =
         socket.handshake.headers.authorization?.split(' ') ?? [];
+      let payload: any;
       try {
-        await this.JwtService.verifyAsync(token, {
+        payload = await this.JwtService.verifyAsync(token, {
           secret: JWTSECRET,
         });
       } catch {
@@ -48,16 +49,12 @@ export class ChatGateway implements OnModuleInit {
         return;
       }
       // extract the userid from jwt token and save it to cache
-      await this.cacheManager.set(
-        `${socket.handshake.headers.userid}`,
-        socket.id,
-        0,
-      );
+      await this.cacheManager.set(`${payload.sub}`, socket.id, 0);
       //remove user from online users if he disconnects
       socket.on('disconnect', async (sock) => {
         //remove session id from cache
 
-        await this.cacheManager.del(`${socket.handshake.headers.userid}`);
+        await this.cacheManager.del(`${payload.sub}`);
       });
     });
   }

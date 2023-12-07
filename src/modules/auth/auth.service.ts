@@ -24,7 +24,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: data.UserId, mail: data.Email, name: data.FullName };
+    const payload: object = {
+      sub: data.UserId,
+      mail: data.Email,
+      name: data.FullName,
+    };
     return { auth_token: await this.jwtService.signAsync(payload) };
   }
   async CreateAccount(dto: UserDto): Promise<object> {
