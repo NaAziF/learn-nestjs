@@ -21,3 +21,12 @@ model Chat {
   Attachments   Json?
   IsDeleted     Boolean  @default(false)
 }
+
+model User {
+  UserId    String   @id @default(auto()) @map("_id") @db.ObjectId
+  CreatedAt DateTime @default(now())
+  UpdatedAt DateTime @updatedAt
+  FullName  String?
+  Password  String
+  Email     String   @unique
+}
