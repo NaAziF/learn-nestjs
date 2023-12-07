@@ -13,7 +13,7 @@ import { JWTSECRET } from './constants';
     JwtModule.register({
       global: true,
       secret: JWTSECRET,
-      signOptions: { expiresIn: '3600s' },
+      signOptions: { expiresIn: '36000s' },
     }),
   ],
   providers: [AuthService],

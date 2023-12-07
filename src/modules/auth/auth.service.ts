@@ -23,9 +23,9 @@ export class AuthService {
     if (data?.Password !== dto.Password) {
       throw new UnauthorizedException();
     }
-    const payload = `{ mail: ${data.Email}, sub: ${data.UserId} }`;
-    const pay = { sub: data.UserId, mail: data.Email };
-    return await { auth_token: await this.jwtService.signAsync(pay) };
+
+    const payload = { sub: data.UserId, mail: data.Email, name: data.FullName };
+    return { auth_token: await this.jwtService.signAsync(payload) };
   }
   async CreateAccount(dto: UserDto): Promise<object> {
     let existing: any = await this.prisma.user.findFirst({
