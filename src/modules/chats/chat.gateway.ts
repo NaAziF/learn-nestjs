@@ -32,7 +32,7 @@ export class ChatGateway implements OnModuleInit {
 
   onModuleInit() {
     this.server.on('connection', async (socket: Socket) => {
-      // save session Id in cache
+      // validate the jwt from connection handshake
       const [type, token] =
         socket.handshake.headers.authorization?.split(' ') ?? [];
       try {
@@ -40,19 +40,20 @@ export class ChatGateway implements OnModuleInit {
           secret: JWTSECRET,
         });
       } catch {
+        // disconnect the user if not authencated
         this.server
           .to(socket.id)
           .emit('message', 'Invalid Auth Token! Disconnected...');
         socket.disconnect();
         return;
       }
-
+      // extract the userid from jwt token and save it to cache
       await this.cacheManager.set(
         `${socket.handshake.headers.userid}`,
         socket.id,
         0,
       );
-
+      //remove user from online users if he disconnects
       socket.on('disconnect', async (sock) => {
         //remove session id from cache
 
@@ -60,7 +61,7 @@ export class ChatGateway implements OnModuleInit {
       });
     });
   }
-
+  // handle the chats once user is connected
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() message: any): Promise<void> {
     message = JSON.parse(message);
