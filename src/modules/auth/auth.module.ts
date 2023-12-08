@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { MongoModule } from '../mongodb/mongo.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
-import { JWTSECRET } from './constants';
+import { JWTSECRET, JWTVALIDITY } from './constants';
 
 @Module({
   imports: [
@@ -13,7 +13,12 @@ import { JWTSECRET } from './constants';
     JwtModule.register({
       global: true,
       secret: JWTSECRET,
-      signOptions: { expiresIn: '36000s' },
+      signOptions: {
+        expiresIn: JWTVALIDITY,
+        issuer: 'user',
+        jwtid: '3234jwt',
+        keyid: '23323key',
+      },
     }),
   ],
   providers: [AuthService],

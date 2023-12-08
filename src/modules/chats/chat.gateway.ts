@@ -40,15 +40,16 @@ export class ChatGateway implements OnModuleInit {
         payload = await this.JwtService.verifyAsync(token, {
           secret: JWTSECRET,
         });
-      } catch {
+      } catch (err) {
         // disconnect the user if not authencated
-        this.server
-          .to(socket.id)
-          .emit('message', 'Invalid Auth Token! Disconnected...');
+        this.server.to(socket.id).emit('message', {
+          Error: err.message,
+          Code: 403,
+        });
         socket.disconnect();
         return;
       }
-      // extract the userid from jwt token and save it to cache
+      // extract the userid from jwt token and save it to cache with session id
       await this.cacheManager.set(`${payload.sub}`, socket.id, 0);
       //remove user from online users if he disconnects
       socket.on('disconnect', async (sock) => {
